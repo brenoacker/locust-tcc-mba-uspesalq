@@ -18,7 +18,32 @@
 # from tests.data_creation.create_product.create_side_dish import CreateSideDishTest
 
 
-from tests.order.delivery_order_senior_user_with_offer import DeliveryOrderSeniorUserWithOffer
+# from tests.order.delivery_order_senior_user_with_offer_and_card import DeliveryOrderSeniorUserWithOfferAndCard
+
+
+# from tests.order.delivery_order_senior_user_without_offer_and_card import DeliveryOrderSeniorUserWithoutOfferAndCard
+
+# from tests.order.delivery_order_senior_user_with_offer_and_card import DeliveryOrderSeniorUserWithOfferAndCard
+
+# from tests.order.delivery.delivery_order_senior_user_without_offer_and_cash import DeliveryOrderSeniorUserWithoutOfferAndCash
+
+# from tests.data_creation.create_user.create_senior_user import CreateSeniorUserTest
+
+from tests.data_creation.create_offer.create_amount_offer import \
+    CreateAmountOfferTest
+from tests.data_creation.create_product.create_burger import CreateBurgerTest
+from tests.data_creation.create_product.create_dessert import CreateDessertTest
+from tests.data_creation.create_product.create_drink import CreateDrinkTest
+from tests.data_creation.create_product.create_side_dish import \
+    CreateSideDishTest
+from tests.order.delivery.delivery_order_senior_user_with_offer_and_card import \
+    DeliveryOrderSeniorUserWithOfferAndCard
+from tests.order.delivery.delivery_order_senior_user_with_offer_and_cash import \
+    DeliveryOrderSeniorUserWithOfferAndCash
+from tests.order.delivery.delivery_order_senior_user_without_offer_and_card import \
+    DeliveryOrderSeniorUserWithoutOfferAndCard
+from tests.order.delivery.delivery_order_senior_user_without_offer_and_cash import \
+    DeliveryOrderSeniorUserWithoutOfferAndCash
 
 
 class FeaturesWeight():
@@ -39,6 +64,9 @@ class FeaturesWeight():
         # tasks.append((CreateDrinkTest, 1))
         # tasks.append((CreateSideDishTest, 1))
 
-        tasks.append((DeliveryOrderSeniorUserWithOffer, 1))
+        tasks.append((DeliveryOrderSeniorUserWithOfferAndCard, 7))
+        tasks.append((DeliveryOrderSeniorUserWithoutOfferAndCard, 3))
+        tasks.append((DeliveryOrderSeniorUserWithoutOfferAndCash, 3))
+        tasks.append((DeliveryOrderSeniorUserWithOfferAndCash, 7))
 
         return dict(tasks)

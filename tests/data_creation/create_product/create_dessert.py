@@ -1,14 +1,17 @@
-from configs.test_data import TestData
 import random
 import string
+
+from locust import HttpUser, between, task
+
 from configs.test_data import TestData
-from locust import task, HttpUser
 from services.offer_service import OfferService
 from services.product_service import ProductService
-from utils.common.create_burger import generate_unique_burger_name, generate_unique_dessert_name
+from utils.common.create_burger import (generate_unique_burger_name,
+                                        generate_unique_dessert_name)
 from utils.enums.product_category import ProductCategory
 from utils.payloads.offer import OfferPayload
 from utils.payloads.product import ProductPayload
+
 
 class CreateDessertTest(TestData):
 
@@ -32,3 +35,4 @@ class CreateDessertTest(TestData):
 class UnitTest(HttpUser):
     tasks = [CreateDessertTest]
     host = "https://localhost"
+    wait_time = between(1, 2)

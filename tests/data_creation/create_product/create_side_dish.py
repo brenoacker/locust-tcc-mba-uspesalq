@@ -1,11 +1,13 @@
-from configs.test_data import TestData
 import random
+
+from locust import HttpUser, between, task
+
 from configs.test_data import TestData
-from locust import task, HttpUser
 from services.product_service import ProductService
 from utils.common.create_burger import generate_unique_side_dish_name
 from utils.enums.product_category import ProductCategory
 from utils.payloads.product import ProductPayload
+
 
 class CreateSideDishTest(TestData):
 
@@ -29,3 +31,4 @@ class CreateSideDishTest(TestData):
 class UnitTest(HttpUser):
     tasks = [CreateSideDishTest]
     host = "https://localhost"
+    wait_time = between(1, 2)

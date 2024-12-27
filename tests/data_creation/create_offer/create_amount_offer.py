@@ -1,11 +1,13 @@
-from configs.test_data import TestData
 import random
 import string
+
+from locust import HttpUser, between, task
+
 from configs.test_data import TestData
-from locust import task, HttpUser
 from services.offer_service import OfferService
 from utils.enums.offer_type import OfferType
 from utils.payloads.offer import OfferPayload
+
 
 class CreateAmountOfferTest(TestData):
 
@@ -28,3 +30,4 @@ class CreateAmountOfferTest(TestData):
 class UnitTest(HttpUser):
     tasks = [CreateAmountOfferTest]
     host = "https://localhost"
+    wait_time = between(1, 2)

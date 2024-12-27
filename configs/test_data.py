@@ -1,9 +1,13 @@
+import os
+
 from locust import SequentialTaskSet, events
+
 from utils.enums.offer_type import OfferType
 from utils.enums.order_type import OrderType
 from utils.enums.payment_card_gateway import PaymentCardGateway
 from utils.enums.payment_method import PaymentMethod
 from utils.enums.product_category import ProductCategory
+
 
 class TestData(SequentialTaskSet):
     def __init__(self, parent):
@@ -17,7 +21,6 @@ class TestData(SequentialTaskSet):
         self.gender = None
         self.password = None
         self.host = "http://localhost:8000"
-        self.stagename = None
         self.offer_id = None
         self.discount_type: OfferType = None
         self.discount_value = None
@@ -40,3 +43,10 @@ class TestData(SequentialTaskSet):
         self.client.verify = False
         self.client.proxies = {"http": "http://localhost:8888", "https": "https://localhost:8888"}
         
+        self.redis_primary_user_table = "users_primary"
+        self.redis_secondary_user_table = "users_secondary"
+
+        self.stagename = None
+
+    def test_reset(self):
+        self.stagename = os.environ.get("LOCUST_STAGE")

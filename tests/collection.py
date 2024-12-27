@@ -1,7 +1,11 @@
+import os
+
+from locust import HttpUser, LoadTestShape, run_single_user
+
 from configs.features_weight import FeaturesWeight
 from configs.test_data import TestData
 from configs.test_stages import TestStagesConfig
-from locust import run_single_user, HttpUser, LoadTestShape
+
 
 class HttpCollection(HttpUser):
     host = "https://localhost"
@@ -23,24 +27,11 @@ class CollectionShape(LoadTestShape):
     def tick(self):
         run_time = self.get_run_time()
 
-        # if self.current_stage < len(self.stages):
-        #     stage = self.stages[self.current_stage]
-        #     self.stagename = stage["name"]
-        #     TestData.stagename = self.stagename
-        #     if run_time > stage["duration"]:
-        #         self.current_stage += 1
-        #         if self.current_stage >= len(self.stages):
-        #             return None
-        #         stage = self.stages[self.current_stage]
-        #         self.start_time = run_time
-        #     return (stage["users"], stage["spawn_rate"])
-        
-        # return None
-
         for stage in self.stages:
             if run_time < stage["duration"]:
                 if self.stagename != stage["name"]:
                     self.stagename = stage["name"]
+                    os.environ['LOCUST_STAGE'] = self.stagename
                 tick_data = (stage["users"], stage["spawn_rate"])
                 return tick_data
         return None

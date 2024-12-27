@@ -1,10 +1,17 @@
 import random
 import string
+
+from locust import HttpUser, between, task
+
 from configs.test_data import TestData
-from locust import task, HttpUser
 from services.user_service import UserService
-from utils.common.create_user import generate_random_age, generate_random_email, generate_random_gender, generate_random_phone_number, generate_random_string
+from utils.common.create_user import (generate_random_age,
+                                      generate_random_email,
+                                      generate_random_gender,
+                                      generate_random_phone_number,
+                                      generate_random_string)
 from utils.payloads.user import UserPayload
+
 
 class CreateMidAgeUserTest(TestData):
 
@@ -35,3 +42,4 @@ class CreateMidAgeUserTest(TestData):
 class UnitTest(HttpUser):
     tasks = [CreateMidAgeUserTest]
     host = "https://localhost"
+    wait_time = between(1, 2)
