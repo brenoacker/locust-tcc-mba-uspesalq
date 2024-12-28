@@ -2,6 +2,7 @@ import random
 import string
 from uuid import uuid4
 
+from utils.enums.user_age import UserType
 
 
 def generate_random_string(length=8):
@@ -33,3 +34,11 @@ def generate_random_email():
     uuid = uuid4()
 
     return f"{uuid}@example.com"
+
+def get_user_age(user_type: UserType):
+    if user_type == UserType.SENIOR:
+        return [65, 100]
+    elif user_type == UserType.MID_AGE:
+        return [40, 64]
+    elif user_type == UserType.YOUNG:
+        return [18, 39]

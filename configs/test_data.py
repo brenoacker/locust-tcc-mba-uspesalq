@@ -38,6 +38,9 @@ class TestData(SequentialTaskSet):
         self.payment_id = None
         self.payment_method: PaymentMethod = None
         self.payment_card_gateway: PaymentCardGateway = None
+        self.expected_payment_status = None
+        self.expected_order_status = None
+        self.total_price: float = None
 
         self.client.trust_env = True
         self.client.verify = False

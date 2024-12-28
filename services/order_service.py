@@ -18,7 +18,27 @@ class OrderService:
             if response.status_code != 201:
                 LocustRequest.fail(self, response)
             else:
-                self.order_id = response.json()["id"]
+                json_response = response.json()
+
+                if json_response["cart_id"] != self.cart_id:
+                    LocustRequest.fail(self, response, f"Cart ID is {json_response['cart_id']}, expected {self.cart_id}")
+
+                if json_response["user_id"] != self.user_id:
+                    LocustRequest.fail(self, response, f"User ID is {json_response['user_id']}, expected {self.user_id}")
+
+                if json_response["type"] != self.order_type:
+                    LocustRequest.fail(self, response, f"Order type is {json_response['type']}, expected {self.order_type}")
+
+                if json_response["status"] != self.expected_order_status:
+                    LocustRequest.fail(self, response, f"Order status is {json_response['status']}, expected {self.expected_order_status}")
+
+                if json_response["total_price"] != self.total_price:
+                    LocustRequest.fail(self, response, f"Total price is {json_response['total_price']}, expected {self.total_price}")
+
+                if json_response["offer_id"] != self.offer_id:
+                    LocustRequest.fail(self, response, f"Offer ID is {json_response['offer_id']}, expected {self.offer_id}")
+
+                self.order_id = json_response["id"]
 
     @staticmethod
     def get_order(self, order_id):
@@ -31,4 +51,24 @@ class OrderService:
         ) as response:
             if response.status_code != 200:
                 LocustRequest.fail(self, response)
+            json_response = response.json()
+
+            if json_response["cart_id"] != self.cart_id:
+                LocustRequest.fail(self, response, f"Cart ID is {json_response['cart_id']}, expected {self.cart_id}")
+
+            if json_response["user_id"] != self.user_id:
+                LocustRequest.fail(self, response, f"User ID is {json_response['user_id']}, expected {self.user_id}")
+
+            if json_response["type"] != self.order_type:
+                LocustRequest.fail(self, response, f"Order type is {json_response['type']}, expected {self.order_type}")
+
+            if json_response["status"] != self.expected_order_status:
+                LocustRequest.fail(self, response, f"Order status is {json_response['status']}, expected {self.expected_order_status}")
+
+            if json_response["total_price"] != self.total_price:
+                LocustRequest.fail(self, response, f"Total price is {json_response['total_price']}, expected {self.total_price}")
+
+            if json_response["offer_id"] != self.offer_id:
+                LocustRequest.fail(self, response, f"Offer ID is {json_response['offer_id']}, expected {self.offer_id}")
+
             return response.json()

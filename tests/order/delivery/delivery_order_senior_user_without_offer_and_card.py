@@ -37,20 +37,30 @@ class DeliveryOrderSeniorUserWithoutOfferAndCard(TestData):
     def get_products(self):
         ProductService.get_all_products(self)
         burger_products = [product for product in self.products_list if product["category"] == ProductCategory.BURGER.value]
-        random_burger = random.choice(burger_products)["id"]
+        random_burger = random.choice(burger_products)
+        random_burger_id = random_burger["id"]
+        random_burger_price = random_burger["price"]
         dessert_products = [product for product in self.products_list if product["category"] == ProductCategory.DESSERT.value]
-        random_dessert = random.choice(dessert_products)["id"]
+        random_dessert = random.choice(dessert_products)
+        random_dessert_id = random_dessert["id"]
+        random_dessert_price = random_dessert["price"]
         drink_products = [product for product in self.products_list if product["category"] == ProductCategory.DRINK.value]
-        random_drink = random.choice(drink_products)["id"]
+        random_drink = random.choice(drink_products)
+        random_drink_id = random_drink["id"]
+        random_drink_price = random_drink["price"]
         side_dish_products = [product for product in self.products_list if product["category"] == ProductCategory.SIDE_DISH.value]
-        random_side_dish = random.choice(side_dish_products)["id"]
+        random_side_dish = random.choice(side_dish_products)
+        random_side_dish_id = random_side_dish["id"]
+        random_side_dish_price = random_side_dish["price"]
     
+        quantity = 5
+        self.total_price = (random_burger_price + random_dessert_price + random_drink_price + random_side_dish_price) * quantity
 
         self.cart_items = [
-            CartItemEntity(random_burger, quantity=5), 
-            CartItemEntity(random_dessert, quantity=5),
-            CartItemEntity(random_drink, quantity=5), 
-            CartItemEntity(random_side_dish, quantity=5)
+            CartItemEntity(random_burger_id, quantity=quantity), 
+            CartItemEntity(random_dessert_id, quantity=quantity),
+            CartItemEntity(random_drink_id, quantity=quantity), 
+            CartItemEntity(random_side_dish_id, quantity=quantity)
         ]
 
     @task
@@ -64,34 +74,35 @@ class DeliveryOrderSeniorUserWithoutOfferAndCard(TestData):
 
     @task
     def create_order(self):
+        self.expected_order_status = OrderStatus.PENDING.value
         payload = OrderPayload.create_order(self.cart_id, self.order_type, self.offer_id)
         OrderService.create_order(self, payload)
 
     @task
     def get_order_status(self):
-        order = OrderService.get_order(self, self.order_id)
-        if order["status"] != OrderStatus.PENDING.value:
-            self.interrupt()
+        self.expected_order_status = OrderStatus.PENDING.value
+        OrderService.get_order(self, self.order_id)
+
+    @task
+    def get_payment_status_by_order_id(self):
+        self.expected_payment_status = PaymentStatus.PENDING.value
+        PaymentService.get_payment_status_by_order_id(self, self.order_id)
 
     @task
     def execute_payment(self):
+        self.expected_payment_status = PaymentStatus.PAID.value
         payload = PaymentPayload.execute_payment(self.payment_method, self.payment_card_gateway)
         PaymentService.execute_payment(self, payload)
 
     @task
     def get_payment_status(self):
-        payment = PaymentService.get_payment_status(self, self.payment_id)
-        if payment["status"] != PaymentStatus.PAID.value:
-            self.interrupt()
+        self.expected_payment_status = PaymentStatus.PAID.value
+        PaymentService.get_payment_status(self, self.payment_id)
 
     @task
     def get_order_status_2(self):
-        order = OrderService.get_order(self, self.order_id)
-        if order["status"] != OrderStatus.CONFIRMED.value:
-            self.interrupt()
-
-        if order["type"] != self.order_type:
-            self.interrupt()
+        self.expected_order_status = OrderStatus.CONFIRMED.value
+        OrderService.get_order(self, self.order_id)
 
 
 

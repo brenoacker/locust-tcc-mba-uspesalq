@@ -23,11 +23,11 @@ from utils.payloads.order import OrderPayload
 from utils.payloads.payment import PaymentPayload
 
 
-class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
+class DriveThruOrderSeniorUserWithOfferAndCard(TestData):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.order_type = OrderType.DELIVERY.value
+        self.order_type = OrderType.DRIVE_THRU.value
         self.payment_method = PaymentMethod.CARD.value
         self.payment_card_gateway = PaymentCardGateway.ADYEN.value
         
@@ -119,6 +119,6 @@ class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
 
 
 class UnitTest(HttpUser):
-    tasks = [DeliveryOrderSeniorUserWithOfferAndCard]
+    tasks = [DriveThruOrderSeniorUserWithOfferAndCard]
     host = "https://localhost"
     wait_time = between(1, 2)

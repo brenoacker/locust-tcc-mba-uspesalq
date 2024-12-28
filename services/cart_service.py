@@ -19,7 +19,16 @@ class CartService:
             if response.status_code != 201:
                 LocustRequest.fail(self, response)
             else:
-                self.cart_id = response.json()['id']
+                json_response = response.json()
+
+                if json_response["user_id"] != self.user_id:
+                    LocustRequest.fail(self, response, f"User ID is {json_response['user_id']}, expected {self.user_id}")
+
+                if json_response["total_price"] != self.total_price:
+                    LocustRequest.fail(self, response, f"Total price is {json_response['total_price']}, expected {self.total_price}")
+
+                self.cart_id = json_response['id']
+
     
     @abstractmethod
     def get_cart(self, cart_id):
@@ -32,3 +41,11 @@ class CartService:
         ) as response:
             if response.status_code != 200:
                 LocustRequest.fail(self, response)
+
+            json_response = response.json()
+
+            if json_response["user_id"] != self.user_id:
+                LocustRequest.fail(self, response, f"User ID is {json_response['user_id']}, expected {self.user_id}")
+
+            if json_response["total_price"] != self.total_price:
+                LocustRequest.fail(self, response, f"Total price is {json_response['total_price']}, expected {self.total_price}")

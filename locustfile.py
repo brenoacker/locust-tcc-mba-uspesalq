@@ -1,9 +1,11 @@
-from locust import HttpUser, task, between
 import random
 import string
 
+from locust import HttpUser, between, task
+
+
 class UserCreationTest(HttpUser):
-    wait_time = between(1, 3)  # Tempo de espera entre as requisições
+    wait_time = between(1, 2)
     user_id = None  # ID do usuário criado
 
     def generate_random_string(self, length=8):

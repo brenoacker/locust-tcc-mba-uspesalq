@@ -1,6 +1,6 @@
 import random
 
-from locust import HttpUser, between, events, task
+from locust import HttpUser, between, task
 
 from cart_entity import CartItemEntity
 from configs.test_data import TestData
@@ -11,10 +11,8 @@ from services.payment_service import PaymentService
 from services.product_service import ProductService
 from services.redis_service import RedisService
 from utils.common.create_order import calculate_total_price_with_discount
-from utils.common.locust_request import LocustRequest
 from utils.enums.order_status import OrderStatus
 from utils.enums.order_type import OrderType
-from utils.enums.payment_card_gateway import PaymentCardGateway
 from utils.enums.payment_method import PaymentMethod
 from utils.enums.payment_status import PaymentStatus
 from utils.enums.product_category import ProductCategory
@@ -23,13 +21,13 @@ from utils.payloads.order import OrderPayload
 from utils.payloads.payment import PaymentPayload
 
 
-class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
+class DriveThruOrderSeniorUserWithOfferAndCash(TestData):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.order_type = OrderType.DELIVERY.value
-        self.payment_method = PaymentMethod.CARD.value
-        self.payment_card_gateway = PaymentCardGateway.ADYEN.value
+        self.order_type = OrderType.DRIVE_THRU.value
+        self.payment_method = PaymentMethod.CASH.value
+        self.payment_card_gateway = None
         
     @task
     def get_users(self):
@@ -119,6 +117,6 @@ class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
 
 
 class UnitTest(HttpUser):
-    tasks = [DeliveryOrderSeniorUserWithOfferAndCard]
+    tasks = [DriveThruOrderSeniorUserWithOfferAndCash]
     host = "https://localhost"
     wait_time = between(1, 2)

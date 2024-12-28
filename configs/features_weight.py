@@ -36,6 +36,8 @@ from tests.data_creation.create_product.create_dessert import CreateDessertTest
 from tests.data_creation.create_product.create_drink import CreateDrinkTest
 from tests.data_creation.create_product.create_side_dish import \
     CreateSideDishTest
+from tests.data_creation.create_user.create_senior_user import \
+    CreateSeniorUserTest
 from tests.order.delivery.delivery_order_senior_user_with_offer_and_card import \
     DeliveryOrderSeniorUserWithOfferAndCard
 from tests.order.delivery.delivery_order_senior_user_with_offer_and_cash import \
@@ -44,6 +46,22 @@ from tests.order.delivery.delivery_order_senior_user_without_offer_and_card impo
     DeliveryOrderSeniorUserWithoutOfferAndCard
 from tests.order.delivery.delivery_order_senior_user_without_offer_and_cash import \
     DeliveryOrderSeniorUserWithoutOfferAndCash
+from tests.order.drive_thru.drive_thru_order_senior_user_with_offer_and_card import \
+    DriveThruOrderSeniorUserWithOfferAndCard
+from tests.order.drive_thru.drive_thru_order_senior_user_with_offer_and_cash import \
+    DriveThruOrderSeniorUserWithOfferAndCash
+from tests.order.drive_thru.drive_thru_order_senior_user_without_offer_and_card import \
+    DriveThruOrderSeniorUserWithoutOfferAndCard
+from tests.order.drive_thru.drive_thru_order_senior_user_without_offer_and_cash import \
+    DriveThruOrderSeniorUserWithoutOfferAndCash
+from tests.order.in_store.in_store_order_senior_user_with_offer_and_card import \
+    InStoreOrderSeniorUserWithOfferAndCard
+from tests.order.in_store.in_store_order_senior_user_with_offer_and_cash import \
+    InStoreOrderSeniorUserWithOfferAndCash
+from tests.order.in_store.in_store_order_senior_user_without_offer_and_card import \
+    InStoreOrderSeniorUserWithoutOfferAndCard
+from tests.order.in_store.in_store_order_senior_user_without_offer_and_cash import \
+    InStoreOrderSeniorUserWithoutOfferAndCash
 
 
 class FeaturesWeight():
@@ -54,7 +72,7 @@ class FeaturesWeight():
         tasks = []
 
         # tasks.append((CreateYoungUserTest, 1))
-        # tasks.append((CreateSeniorUserTest, 3))
+        # tasks.append((CreateSeniorUserTest, 5))
         # tasks.append((CreateMidAgeUserTest, 1))
 
         # tasks.append((CreateAmountOfferTest, 1))
@@ -64,9 +82,19 @@ class FeaturesWeight():
         # tasks.append((CreateDrinkTest, 1))
         # tasks.append((CreateSideDishTest, 1))
 
-        tasks.append((DeliveryOrderSeniorUserWithOfferAndCard, 7))
-        tasks.append((DeliveryOrderSeniorUserWithoutOfferAndCard, 3))
-        tasks.append((DeliveryOrderSeniorUserWithoutOfferAndCash, 3))
-        tasks.append((DeliveryOrderSeniorUserWithOfferAndCash, 7))
+        tasks.append((DeliveryOrderSeniorUserWithOfferAndCard, 11))
+        tasks.append((DeliveryOrderSeniorUserWithoutOfferAndCard, 5))
+        tasks.append((DeliveryOrderSeniorUserWithoutOfferAndCash, 5))
+        tasks.append((DeliveryOrderSeniorUserWithOfferAndCash, 11))
+
+        tasks.append((DriveThruOrderSeniorUserWithOfferAndCard, 11))
+        tasks.append((DriveThruOrderSeniorUserWithoutOfferAndCard, 5))
+        tasks.append((DriveThruOrderSeniorUserWithoutOfferAndCash, 5))
+        tasks.append((DriveThruOrderSeniorUserWithOfferAndCash, 11))
+
+        tasks.append((InStoreOrderSeniorUserWithOfferAndCard, 11))
+        tasks.append((InStoreOrderSeniorUserWithoutOfferAndCard, 5))
+        tasks.append((InStoreOrderSeniorUserWithoutOfferAndCash, 5))
+        tasks.append((InStoreOrderSeniorUserWithOfferAndCash, 11))
 
         return dict(tasks)

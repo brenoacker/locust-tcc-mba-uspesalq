@@ -1,20 +1,16 @@
 import random
 
-from locust import HttpUser, between, events, task
+from locust import HttpUser, between, task
 
 from cart_entity import CartItemEntity
 from configs.test_data import TestData
 from services.cart_service import CartService
-from services.offer_service import OfferService
 from services.order_service import OrderService
 from services.payment_service import PaymentService
 from services.product_service import ProductService
 from services.redis_service import RedisService
-from utils.common.create_order import calculate_total_price_with_discount
-from utils.common.locust_request import LocustRequest
 from utils.enums.order_status import OrderStatus
 from utils.enums.order_type import OrderType
-from utils.enums.payment_card_gateway import PaymentCardGateway
 from utils.enums.payment_method import PaymentMethod
 from utils.enums.payment_status import PaymentStatus
 from utils.enums.product_category import ProductCategory
@@ -23,25 +19,18 @@ from utils.payloads.order import OrderPayload
 from utils.payloads.payment import PaymentPayload
 
 
-class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
+class InStoreOrderSeniorUserWithoutOfferAndCash(TestData):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.order_type = OrderType.DELIVERY.value
-        self.payment_method = PaymentMethod.CARD.value
-        self.payment_card_gateway = PaymentCardGateway.ADYEN.value
+        self.order_type = OrderType.IN_STORE.value
+        self.payment_method = PaymentMethod.CASH.value
+        self.payment_card_gateway = None
+        self.offer_id = None
         
     @task
     def get_users(self):
         RedisService.get_user(self)
-
-    @task
-    def get_offers(self):
-        OfferService.get_all_offers(self)
-        random_offer = random.choice(self.offers_list)
-        self.offer_id = random_offer["id"]
-        self.discount_type = random_offer["discount_type"]
-        self.discount_value = random_offer["discount_value"]
 
     @task
     def get_products(self):
@@ -84,8 +73,6 @@ class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
 
     @task
     def create_order(self):
-        self.total_price = calculate_total_price_with_discount(self.total_price, self.discount_type, self.discount_value)
-
         self.expected_order_status = OrderStatus.PENDING.value
         payload = OrderPayload.create_order(self.cart_id, self.order_type, self.offer_id)
         OrderService.create_order(self, payload)
@@ -119,6 +106,6 @@ class DeliveryOrderSeniorUserWithOfferAndCard(TestData):
 
 
 class UnitTest(HttpUser):
-    tasks = [DeliveryOrderSeniorUserWithOfferAndCard]
+    tasks = [InStoreOrderSeniorUserWithoutOfferAndCash]
     host = "https://localhost"
     wait_time = between(1, 2)
