@@ -7,6 +7,7 @@ from utils.enums.order_type import OrderType
 from utils.enums.payment_card_gateway import PaymentCardGateway
 from utils.enums.payment_method import PaymentMethod
 from utils.enums.product_category import ProductCategory
+from utils.enums.user_age import UserType
 
 
 class TestData(SequentialTaskSet):
@@ -41,6 +42,7 @@ class TestData(SequentialTaskSet):
         self.expected_payment_status = None
         self.expected_order_status = None
         self.total_price: float = None
+        self.user_type: UserType = None
 
         self.client.trust_env = True
         self.client.verify = False

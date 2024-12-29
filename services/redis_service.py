@@ -1,39 +1,9 @@
-# import json
-# import os
-
-# import redis
-
-
-# class RedisService:
-
-#     @staticmethod
-#     def get_user(self):
-#         redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
-#         user = redis_client.rpoplpush(os.getenv("REDIS_PRIMARY_USER_TABLE"), os.getenv("REDIS_SECONDARY_USER_TABLE"))
-#         if user:
-#             user = json.loads(user)
-#             self.user_id = user["id"]
-#             self.name = user["name"]
-#             self.age = user["age"]
-#             self.email = user["email"]
-#             self.phone_number = user["phone_number"]
-#             self.gender = user["gender"]
-#             self.password = user["password"]
-#         else:
-#             primary_user_table = os.getenv("REDIS_PRIMARY_USER_TABLE")
-#             secondary_user_table = os.getenv("REDIS_SECONDARY_USER_TABLE")
-
-#             os.environ["REDIS_PRIMARY_USER_TABLE"] = secondary_user_table
-#             os.environ["REDIS_SECONDARY_USER_TABLE"] = primary_user_table
-
-#             return RedisService.get_user(self)
-        
-#         self.stagename = os.environ.get("LOCUST_STAGE")
-
 import json
 import os
 
 import redis
+
+from utils.enums.user_age import UserType
 
 
 class RedisService:
@@ -61,20 +31,21 @@ class RedisService:
         return item
         """
 
-    def get_user(self):
+    def get_user(self, user_type: UserType):
         """
         Obtém um usuário de uma tabela Redis, movendo-o de uma tabela primária para uma secundária.
         """
+
+        primary_user_table_value, secondary_user_table_value = RedisService.get_table_value_by_user_type(user_type)
+        primary_env_table, secondary_env_table = RedisService.get_env_table_by_user_type(user_type)
         redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
-        primary_user_table = os.getenv("REDIS_PRIMARY_USER_TABLE")
-        secondary_user_table = os.getenv("REDIS_SECONDARY_USER_TABLE")
 
         # Executa o script Lua para mover o usuário
         user = redis_client.eval(
             RedisService.move_user_script(),
             2,
-            primary_user_table,
-            secondary_user_table
+            primary_user_table_value,
+            secondary_user_table_value
         )
 
         if user:
@@ -88,8 +59,29 @@ class RedisService:
             self.password = user["password"]
         else:
             # Troca as tabelas se a primária estiver vazia
-            os.environ["REDIS_PRIMARY_USER_TABLE"] = secondary_user_table
-            os.environ["REDIS_SECONDARY_USER_TABLE"] = primary_user_table
+            os.environ[primary_env_table] = secondary_user_table_value
+            os.environ[secondary_env_table] = primary_user_table_value
             return RedisService.get_user(self)  # Recursivamente tenta obter o usuário
 
         return self
+
+    def get_table_value_by_user_type(user_type: UserType):
+
+        if user_type == UserType.SENIOR:
+            return os.getenv("REDIS_PRIMARY_SENIOR_USER_TABLE"), os.getenv("REDIS_SECONDARY_SENIOR_USER_TABLE")
+        elif user_type == UserType.MID_AGE:
+            return os.getenv("REDIS_PRIMARY_MID_AGE_USER_TABLE"), os.getenv("REDIS_SECONDARY_MID_AGE_USER_TABLE")
+        elif user_type == UserType.YOUNG:
+            return os.getenv("REDIS_PRIMARY_YOUNG_USER_TABLE"), os.getenv("REDIS_SECONDARY_YOUNG_USER_TABLE")
+        else:
+            raise Exception("Invalid user type")
+        
+    def get_env_table_by_user_type(user_type: UserType):
+        if user_type == UserType.SENIOR:
+            return "REDIS_PRIMARY_SENIOR_USER_TABLE", "REDIS_SECONDARY_SENIOR_USER_TABLE"
+        elif user_type == UserType.MID_AGE:
+            return "REDIS_PRIMARY_MID_AGE_USER_TABLE", "REDIS_SECONDARY_MID_AGE_USER_TABLE"
+        elif user_type == UserType.YOUNG:
+            return "REDIS_PRIMARY_YOUNG_USER_TABLE", "REDIS_SECONDARY_YOUNG_USER_TABLE"
+        else:
+            raise Exception("Invalid user type")

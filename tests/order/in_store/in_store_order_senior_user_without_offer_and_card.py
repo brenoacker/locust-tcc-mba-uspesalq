@@ -15,6 +15,7 @@ from utils.enums.payment_card_gateway import PaymentCardGateway
 from utils.enums.payment_method import PaymentMethod
 from utils.enums.payment_status import PaymentStatus
 from utils.enums.product_category import ProductCategory
+from utils.enums.user_age import UserType
 from utils.payloads.cart import CartPayload
 from utils.payloads.order import OrderPayload
 from utils.payloads.payment import PaymentPayload
@@ -31,7 +32,7 @@ class InStoreOrderSeniorUserWithoutOfferAndCard(TestData):
         
     @task
     def get_users(self):
-        RedisService.get_user(self)
+        RedisService.get_user(self, UserType.SENIOR)
 
     @task
     def get_products(self):

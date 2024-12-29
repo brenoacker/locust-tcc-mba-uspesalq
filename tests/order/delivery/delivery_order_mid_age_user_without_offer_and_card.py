@@ -22,15 +22,15 @@ from utils.payloads.order import OrderPayload
 from utils.payloads.payment import PaymentPayload
 
 
-class DriveThruOrderSeniorUserWithoutOfferAndCard(TestData):
+class DeliveryOrderMidAgeUserWithoutOfferAndCard(TestData):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.order_type = OrderType.DRIVE_THRU.value
+        self.order_type = OrderType.DELIVERY.value
         self.payment_method = PaymentMethod.CARD.value
         self.payment_card_gateway = PaymentCardGateway.ADYEN.value
         self.offer_id = None
-        self.user_type = UserType.SENIOR
+        self.user_type = UserType.MID_AGE
         
     @task
     def get_users(self):
@@ -52,19 +52,14 @@ class DriveThruOrderSeniorUserWithoutOfferAndCard(TestData):
         random_drink = random.choice(drink_products)
         random_drink_id = random_drink["id"]
         random_drink_price = random_drink["price"]
-        side_dish_products = [product for product in self.products_list if product["category"] == ProductCategory.SIDE_DISH.value]
-        random_side_dish = random.choice(side_dish_products)
-        random_side_dish_id = random_side_dish["id"]
-        random_side_dish_price = random_side_dish["price"]
     
-        quantity = 5
-        self.total_price = (random_burger_price + random_dessert_price + random_drink_price + random_side_dish_price) * quantity
+        quantity = 3
+        self.total_price = (random_burger_price + random_dessert_price + random_drink_price) * quantity
 
         self.cart_items = [
             CartItemEntity(random_burger_id, quantity=quantity), 
             CartItemEntity(random_dessert_id, quantity=quantity),
             CartItemEntity(random_drink_id, quantity=quantity), 
-            CartItemEntity(random_side_dish_id, quantity=quantity)
         ]
 
     @task
@@ -111,6 +106,6 @@ class DriveThruOrderSeniorUserWithoutOfferAndCard(TestData):
 
 
 class UnitTest(HttpUser):
-    tasks = [DriveThruOrderSeniorUserWithoutOfferAndCard]
+    tasks = [DeliveryOrderMidAgeUserWithoutOfferAndCard]
     host = "https://localhost"
     wait_time = between(1, 2)

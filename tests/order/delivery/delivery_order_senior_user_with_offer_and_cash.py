@@ -10,12 +10,14 @@ from services.order_service import OrderService
 from services.payment_service import PaymentService
 from services.product_service import ProductService
 from services.redis_service import RedisService
+from services.user_service import UserService
 from utils.common.create_order import calculate_total_price_with_discount
 from utils.enums.order_status import OrderStatus
 from utils.enums.order_type import OrderType
 from utils.enums.payment_method import PaymentMethod
 from utils.enums.payment_status import PaymentStatus
 from utils.enums.product_category import ProductCategory
+from utils.enums.user_age import UserType
 from utils.payloads.cart import CartPayload
 from utils.payloads.order import OrderPayload
 from utils.payloads.payment import PaymentPayload
@@ -28,10 +30,12 @@ class DeliveryOrderSeniorUserWithOfferAndCash(TestData):
         self.order_type = OrderType.DELIVERY.value
         self.payment_method = PaymentMethod.CASH.value
         self.payment_card_gateway = None
+        self.user_type = UserType.SENIOR
         
     @task
     def get_users(self):
-        RedisService.get_user(self)
+        RedisService.get_user(self, self.user_type)
+        UserService.get_user(self, self.user_id)
 
     @task
     def get_offers(self):
